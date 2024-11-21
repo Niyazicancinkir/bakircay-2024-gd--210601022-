@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - PlacementArea
+  - playGroundArea
+  - spawnToObject
+  - spawnedObject
   layers:
   - Default
   - TransparentFX
