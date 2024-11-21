@@ -526,8 +526,8 @@ Transform:
   m_GameObject: {fileID: 945444269}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.24, y: 0.06, z: -5.52}
-  m_LocalScale: {x: 0.3552937, y: 0.24909, z: 0.14274563}
+  m_LocalPosition: {x: -0.03, y: 0.17, z: -5.52}
+  m_LocalScale: {x: 0.54335064, y: 1.5275, z: 0.21146338}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -633,7 +633,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
   m_LocalPosition: {x: 6.04, y: -0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1.4848}
+  m_LocalScale: {x: 2.8957, y: 1, z: 2.0163584}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -739,7 +739,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071068}
   m_LocalPosition: {x: -5.76, y: -0, z: 0}
-  m_LocalScale: {x: 1.1603, y: 1, z: 1.5065}
+  m_LocalScale: {x: 2.6867907, y: 1, z: 2.0000293}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -845,7 +845,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0.21, y: -0, z: 6.83}
-  m_LocalScale: {x: 1.27, y: 1, z: 1}
+  m_LocalScale: {x: 1.5114269, y: 1, z: 2.5202}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -951,7 +951,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: -0, z: -6.61}
-  m_LocalScale: {x: 1.2443696, y: 1, z: 1}
+  m_LocalScale: {x: 1.7310426, y: 0.32269, z: 2.5987}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -1095,14 +1095,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objectsToSpawn:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 100000, guid: 6e616e7bf46c26748a153fac2d7b1293, type: 3}
+  - {fileID: 100000, guid: 1168e432e0c205345b90c4ec2f307c97, type: 3}
+  - {fileID: 100000, guid: 2d434559430d5e54183217ebf67f2bba, type: 3}
+  - {fileID: 100000, guid: 108b1dfb3718d604e9452dfa37a30cdc, type: 3}
+  - {fileID: 100000, guid: a7dfc8f0b06a1f64a889c6c9e36e23d5, type: 3}
+  - {fileID: 100000, guid: e51fe706056928b4586f68a8eeaabac5, type: 3}
+  - {fileID: 100000, guid: 5b63de927760304438a3c6ac347846d5, type: 3}
   spawnHeight: 2
 --- !u!54 &1941841114
 Rigidbody:
@@ -1179,7 +1178,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5323b2a569cf3b04085a4af440770ac1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  liftHeight: 1
+  liftHeight: 2
   moveSpeed: 5
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
