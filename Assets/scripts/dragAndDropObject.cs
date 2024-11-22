@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Diagnostics;
 using UnityEngine;
 
 public class DragAndDropObject : MonoBehaviour
@@ -9,12 +8,19 @@ public class DragAndDropObject : MonoBehaviour
     private Rigidbody rb;
 
     public float liftHeight = 2.0f;
-    public float moveSpeed = 5f; 
+    public float moveSpeed = 5f;
 
     private Vector3 snapTarget;
     private bool isSnapping = false;
 
     private Renderer objectRenderer;
+
+    private static GameObject currentObjectInPlacementArea;
+
+    private float minX = -10f;
+    private float maxX = 10f;
+    private float minZ = -10f;
+    private float maxZ = 10f;
 
     void Start()
     {
@@ -47,25 +53,25 @@ public class DragAndDropObject : MonoBehaviour
             if (Vector3.Distance(transform.position, targetPosition) < 0.7f)
             {
                 isSnapping = false;
-                StartCoroutine(WaitAndHide());
             }
-            
+        }
 
+        if (IsOutOfBounds(transform.position))
+        {
+            RespawnToCenter();
         }
     }
 
     void OnMouseDown()
     {
-        
-            transform.position = new Vector3(transform.position.x, liftHeight, transform.position.z);
-        
+        transform.position = new Vector3(transform.position.x, liftHeight, transform.position.z);
 
         isDragging = true;
 
         if (rb != null)
         {
             rb.useGravity = false;
-            rb.velocity = Vector3.zero; 
+            rb.velocity = Vector3.zero;
         }
 
         Vector3 mousePosition = Input.mousePosition;
@@ -87,8 +93,17 @@ public class DragAndDropObject : MonoBehaviour
     {
         if (other.CompareTag("PlacementArea"))
         {
+            if (currentObjectInPlacementArea != null && currentObjectInPlacementArea != gameObject)
+            {
+                UnityEngine.Debug.Log("Placement Area dolu! Yeni obje (0, 0, 0) noktasýna taþýnýyor.");
+                transform.position = Vector3.zero;
+                return;
+            }
+
+            UnityEngine.Debug.Log("OnTriggerEnter - Placement Area'ya obje ekleniyor.");
             snapTarget = other.transform.position;
             isSnapping = true;
+            currentObjectInPlacementArea = gameObject;
         }
     }
 
@@ -96,6 +111,12 @@ public class DragAndDropObject : MonoBehaviour
     {
         if (other.CompareTag("PlacementArea"))
         {
+            if (currentObjectInPlacementArea == gameObject)
+            {
+                UnityEngine.Debug.Log("Placement Area'dan obje kaldýrýldý.");
+                currentObjectInPlacementArea = null;
+            }
+
             isSnapping = false;
         }
     }
@@ -112,9 +133,15 @@ public class DragAndDropObject : MonoBehaviour
         }
     }
 
-    IEnumerator WaitAndHide()
+    bool IsOutOfBounds(Vector3 position)
     {
-        yield return null;
-        HideObject();
+        return position.x < minX || position.x > maxX || position.z < minZ || position.z > maxZ;
+    }
+
+    void RespawnToCenter()
+    {
+        UnityEngine.Debug.Log("Obje oyun alaný dýþýna çýktý! Merkeze taþýnýyor...");
+        transform.position = Vector3.zero;
+        rb.velocity = Vector3.zero;
     }
 }
