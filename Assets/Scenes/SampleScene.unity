@@ -545,7 +545,7 @@ GameObject:
   - component: {fileID: 1088035402}
   - component: {fileID: 1088035401}
   m_Layer: 0
-  m_Name: prefab (1)
+  m_Name: placementarearigth
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -651,7 +651,7 @@ GameObject:
   - component: {fileID: 1233850080}
   - component: {fileID: 1233850079}
   m_Layer: 0
-  m_Name: prefab
+  m_Name: palcementarealeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -757,7 +757,7 @@ GameObject:
   - component: {fileID: 1588978338}
   - component: {fileID: 1588978337}
   m_Layer: 0
-  m_Name: prefab (2)
+  m_Name: placementfrontend
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -863,7 +863,7 @@ GameObject:
   - component: {fileID: 1641056433}
   - component: {fileID: 1641056432}
   m_Layer: 0
-  m_Name: prefab (3)
+  m_Name: placementAreabehind
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
