@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Security.Cryptography;
 using UnityEngine;
 
 public class DragAndDropObject : MonoBehaviour
@@ -22,10 +23,15 @@ public class DragAndDropObject : MonoBehaviour
     private float minZ = -10f;
     private float maxZ = 10f;
 
+    private string objectType; // Nesne türü için string deðiþken
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         objectRenderer = GetComponent<Renderer>();
+
+        objectType = gameObject.name; // Nesne türünü adýndan alýyoruz
+        UnityEngine.Debug.Log(objectType);
 
         if (rb != null)
         {
@@ -53,6 +59,7 @@ public class DragAndDropObject : MonoBehaviour
             if (Vector3.Distance(transform.position, targetPosition) < 0.7f)
             {
                 isSnapping = false;
+                CheckForMatchingObjects(); // Nesne eþleþmesini kontrol et
             }
         }
 
@@ -91,12 +98,16 @@ public class DragAndDropObject : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
+        UnityEngine.Debug.Log("TrigerEntered");
         if (other.CompareTag("PlacementArea"))
         {
-            if (currentObjectInPlacementArea != null && currentObjectInPlacementArea != gameObject)
+            UnityEngine.Debug.Log(gameObject);
+            UnityEngine.Debug.Log(currentObjectInPlacementArea);
+
+            if (currentObjectInPlacementArea != null && currentObjectInPlacementArea?.name != gameObject?.name)
             {
                 UnityEngine.Debug.Log("Placement Area dolu! Yeni obje (0, 0, 0) noktasýna taþýnýyor.");
-                transform.position = Vector3.zero;
+                transform.position = new Vector3(0, 1, 0);
                 return;
             }
 
@@ -104,6 +115,17 @@ public class DragAndDropObject : MonoBehaviour
             snapTarget = other.transform.position;
             isSnapping = true;
             currentObjectInPlacementArea = gameObject;
+
+            // Get the MatchManager instance and call SetObject
+            MatchManager matchManager = FindObjectOfType<MatchManager>();
+            if (matchManager != null)
+            {
+                matchManager.SetObject(gameObject);  // This will call the method from MatchManager
+            }
+            else
+            {
+                UnityEngine.Debug.LogWarning("MatchManager instance not found!");
+            }
         }
     }
 
@@ -138,10 +160,32 @@ public class DragAndDropObject : MonoBehaviour
         return position.x < minX || position.x > maxX || position.z < minZ || position.z > maxZ;
     }
 
-    void RespawnToCenter()
+    public void RespawnToCenter()
     {
         UnityEngine.Debug.Log("Obje oyun alaný dýþýna çýktý! Merkeze taþýnýyor...");
-        transform.position = Vector3.zero;
+        transform.position = new Vector3(0, 1, 0);
         rb.velocity = Vector3.zero;
+    }
+
+    void CheckForMatchingObjects()
+    {
+        // Eðer yerleþim alanýna eklenen obje, ayný türdeki diðer obje ile eþleþirse skoru arttýr
+        if (currentObjectInPlacementArea != null && currentObjectInPlacementArea != gameObject)
+        {
+            string currentObjectType = currentObjectInPlacementArea.name;
+            string objectType = gameObject.name;
+
+            if (currentObjectType == objectType)
+            {
+                UnityEngine.Debug.Log("Ýki ayný türde nesne yerleþti! Skor artacak...");
+                GameManager.Instance.AddScore(10); // Skoru 10 arttýr
+                currentObjectInPlacementArea = null; // Yerleþim alanýný temizle
+            }
+            else
+            {
+                UnityEngine.Debug.Log("Farklý türde nesneler yerleþti.");
+                transform.position = Vector3.zero; // Farklý türdeyse, nesneyi sýfýr noktasýna taþý
+            }
+        }
     }
 }
