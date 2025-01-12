@@ -1,5 +1,5 @@
 Oyunumun Tanıtım Videosunu Aşağıdaki youtube linkinden ulaşabilirsiniz.
-
+https://niyazicancinkir.itch.io/match-game-latest
 https://youtu.be/YSzh4QnupwQ
 
 Oyun Ekranı Objeler spawn edilmişken böyle gözükmektedir.
