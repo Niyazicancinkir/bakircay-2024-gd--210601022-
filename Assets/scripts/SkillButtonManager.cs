@@ -1,5 +1,7 @@
 using System.Collections;
 using UnityEngine;
+using System.Collections.Generic; // Buraya eklendi
+
 using UnityEngine.UI;
 using DG.Tweening;  // DOTween kütüphanesini ekleyin
 
@@ -47,7 +49,7 @@ public class SkillButtonManager : MonoBehaviour
         // 2. yetenek: Ateþ topu efekti ve animasyon baþlat
         if (button == skill2Button)
         {
-            StartCoroutine(ActivateFireballEffectAndDestroyObjects());
+            StartCoroutine(ActivateFireballEffectAndShuffleObjects());
         }
 
         // 3. yetenek: Þok dalgasý efekti ve animasyon baþlat
@@ -65,16 +67,57 @@ public class SkillButtonManager : MonoBehaviour
         // Buton animasyonu ekleyelim (ölçek deðiþimi)
         AnimateButton(button);
     }
-    IEnumerator ActivateFireballEffectAndDestroyObjects()
+
+    IEnumerator ActivateFireballEffectAndShuffleObjects()
     {
         // Ateþ topu efektini baþlat
         ActivateFireballEffect();
 
         // 0.5 saniye bekle
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.5f);
 
-        // Sonra tüm objeleri yok et
-        DestroyAllSpawnedObjects();
+        // Objeleri karýþtýr ve tekrar spawn et
+        ShuffleSpawnedObjects();
+    }
+    void ShuffleSpawnedObjects()
+    {
+        // "spawnedObject" etiketine sahip tüm objeleri bul
+        GameObject[] spawnedObjects = GameObject.FindGameObjectsWithTag("spawnedObject");
+
+        // Eðer obje yoksa iþlemi sonlandýr
+        if (spawnedObjects.Length == 0)
+            return;
+
+        // Rastgele pozisyonlar oluþtur
+        List<Vector3> originalPositions = new List<Vector3>();
+        foreach (GameObject obj in spawnedObjects)
+        {
+            originalPositions.Add(obj.transform.position);
+        }
+
+        // Pozisyonlarý karýþtýr
+        System.Random random = new System.Random();
+        for (int i = originalPositions.Count - 1; i > 0; i--)
+        {
+            int randomIndex = random.Next(0, i + 1);
+            Vector3 temp = originalPositions[i];
+            originalPositions[i] = originalPositions[randomIndex];
+            originalPositions[randomIndex] = temp;
+        }
+
+        // Objeleri yeni pozisyonlara taþý ve yukarýdan býrak
+        for (int i = 0; i < spawnedObjects.Length; i++)
+        {
+            Vector3 targetPosition = originalPositions[i];
+            Vector3 startPosition = new Vector3(targetPosition.x, targetPosition.y + 3f, targetPosition.z); // Hedef pozisyonun üzerine çýk
+
+            // Objeyi önce yukarý taþý
+            spawnedObjects[i].transform.position = startPosition;
+
+            // Yumuþak bir þekilde hedef konuma düþür
+            spawnedObjects[i].transform.DOMove(targetPosition, 1f)
+                .SetEase(Ease.OutBounce); // Düþüþe sekme efekti ekle
+        }
     }
 
     void DestroySpawnedObjectsAndAddScore()
@@ -165,38 +208,36 @@ public class SkillButtonManager : MonoBehaviour
     }
 
 
-    void ActivateShockwaveEffect()
+  void ActivateShockwaveEffect()
+{
+    // "spawnedObject" etiketine sahip iki objeyi bul
+    GameObject[] spawnedObjects = GameObject.FindGameObjectsWithTag("spawnedObject");
+
+    // Ýki obje seç (ilk ikisini alýyoruz, eþlenik olduklarýný varsayýyoruz)
+    if (spawnedObjects.Length >= 2)
     {
-        // "spawnedObject" etiketine sahip iki objeyi bul
-        GameObject[] spawnedObjects = GameObject.FindGameObjectsWithTag("spawnedObject");
+        GameObject firstObject = spawnedObjects[0];
+        GameObject secondObject = spawnedObjects[1];
 
-        // Ýki obje seç (ilk ikisini alýyoruz, eþlenik olduklarýný varsayýyoruz)
-        if (spawnedObjects.Length >= 2)
-        {
-            GameObject firstObject = spawnedObjects[0];
-            GameObject secondObject = spawnedObjects[1];
+        // Objeleri zýplatma (bounce) hareketi yaptýr
+        firstObject.transform.DOPunchScale(Vector3.one * 2.5f, 1.5f, 5, 0.4f) // Daha uzun ve yoðun zýplama
+            .OnComplete(() =>
+            {
+                shockwaveEffect.Stop(); // Zýplama hareketi tamamlandýðýnda efekt durdur
+            });
 
-            // Objeleri büyütüp küçültürken animasyonlarý düzgün yapalým
-            firstObject.transform.DOScale(Vector3.one * 7f, 1f) // Büyütme
-                .SetEase(Ease.InOutQuad)
-                .OnComplete(() =>
-                {
-                    // Küçültme iþlemi bittiðinde parçacýk efektini kapat
-                    shockwaveEffect.Stop();
-                });
-
-            secondObject.transform.DOScale(Vector3.one * 7f, 1f) // Büyütme
-                .SetEase(Ease.InOutQuad)
-                .OnComplete(() =>
-                {
-                    // Küçültme iþlemi bittiðinde parçacýk efektini kapat
-                    shockwaveEffect.Stop();
-                });
-        }
-
-        // Þok dalgasý parçacýklarýný baþlat
-        shockwaveEffect.Play();
+        secondObject.transform.DOPunchScale(Vector3.one * 2.5f, 1.5f, 5, 0.4f) // Daha uzun ve yoðun zýplama
+            .OnComplete(() =>
+            {
+                shockwaveEffect.Stop(); // Zýplama hareketi tamamlandýðýnda efekt durdur
+            });
     }
+
+    // Þok dalgasý parçacýklarýný baþlat
+    shockwaveEffect.Play();
+}
+
+
 
     void AnimateButton(Button button)
     {

@@ -22,6 +22,7 @@ public class DragAndDropObject : MonoBehaviour
     private float maxX = 10f;
     private float minZ = -10f;
     private float maxZ = 10f;
+    private float minY = -2f;
 
     private string objectType; // Nesne türü için string deðiþken
 
@@ -137,6 +138,15 @@ public class DragAndDropObject : MonoBehaviour
             {
                 UnityEngine.Debug.Log("Placement Area'dan obje kaldýrýldý.");
                 currentObjectInPlacementArea = null;
+                MatchManager matchManager = FindObjectOfType<MatchManager>();
+                if (matchManager != null)
+                {
+                    matchManager.DeleteObject();
+                }
+                else
+                {
+                    UnityEngine.Debug.LogWarning("MatchManager instance not found!");
+                }
             }
 
             isSnapping = false;
@@ -157,7 +167,7 @@ public class DragAndDropObject : MonoBehaviour
 
     bool IsOutOfBounds(Vector3 position)
     {
-        return position.x < minX || position.x > maxX || position.z < minZ || position.z > maxZ;
+        return position.x < minX || position.x > maxX || position.z < minZ || position.z > maxZ || position.y < minY;
     }
 
     public void RespawnToCenter()

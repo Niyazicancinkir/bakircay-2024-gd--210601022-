@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
+using DG.Tweening;
 
 
 public class MatchManager : MonoBehaviour
@@ -47,8 +48,13 @@ public class MatchManager : MonoBehaviour
             CheckMatch(); // Artýk CheckMatch'ý direkt olarak çaðýrabilirsiniz
         }
     }
+    public void DeleteObject()
+    {
+        firstObject = null;
+        secondObject = null;
+    }
 
-    public void CheckMatch()  // Change from static to instance method
+    public void CheckMatch()
     {
         UnityEngine.Debug.Log("First Object Checking: " + firstObject);
         UnityEngine.Debug.Log("Second Object Checking: " + secondObject);
@@ -59,7 +65,6 @@ public class MatchManager : MonoBehaviour
             return;
         }
 
-        // Ensure ObjectID is present
         ObjectID firstObjectID = firstObject.GetComponent<ObjectID>();
         ObjectID secondObjectID = secondObject.GetComponent<ObjectID>();
 
@@ -69,21 +74,26 @@ public class MatchManager : MonoBehaviour
             return;
         }
 
-        // Check if both objects have the same ID
         if (firstObjectID.id == secondObjectID.id)
         {
             UnityEngine.Debug.Log("Eþleþme baþarýlý!");
             if (GameManager.Instance != null)
             {
-                GameManager.Instance.AddScore(10); // Skoru 10 arttýr
+                UnityEngine.Debug.Log("obje sayýsý ::: " + GameObject.FindGameObjectsWithTag("spawnedObject").Length);
+                GameManager.Instance.AddScore(10);
             }
             else
             {
                 UnityEngine.Debug.LogWarning("GameManager instance bulunamadý!");
             }
-            PlayMatchEffect((firstObject.transform.position + secondObject.transform.position) / 2);
-            Destroy(firstObject);
-            Destroy(secondObject);
+
+            // Animasyonla yok olma
+            Vector3 centerPosition = (firstObject.transform.position + secondObject.transform.position) / 2;
+            PlayMatchEffect(centerPosition);
+
+            // Animasyon baþlat
+            AnimateAndDestroy(firstObject);
+            AnimateAndDestroy(secondObject);
         }
         else
         {
@@ -95,6 +105,17 @@ public class MatchManager : MonoBehaviour
         // Reset objects
         firstObject = null;
         secondObject = null;
+    }
+
+
+    private void AnimateAndDestroy(GameObject obj)
+    {
+        obj.transform.DOScale(Vector3.zero, 0.5f) // 0.5 saniyede küçült
+            .SetEase(Ease.InBack) // Geri çekilme efekti ekle
+            .OnComplete(() =>
+            {
+                Destroy(obj); // Animasyon tamamlandýktan sonra yok et
+            });
     }
 
     public void PlayMatchEffect(Vector3 position) // Change from static to instance method
